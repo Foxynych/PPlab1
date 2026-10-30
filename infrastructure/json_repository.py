@@ -26,7 +26,7 @@ class JsonTrackRepository(TrackRepository):
                 title=t.title,
                 artist=t.artist,
                 duration=t.duration,
-                liked=t.isLiked,
+                isLiked=t.isLiked,
             )
             for t in tracks
         ]

@@ -40,19 +40,21 @@ class MusicService:
             
         raise ValueError(f"Трек с ID {track_id} не найден")
 
-    def like_track(self, track_id: int) -> Track:
+    def un_like_track(self, track_id: int) -> Track:
         tracks = self.repository.get_all()
         for track in tracks:
             if track.id == track_id:
                 if track.isLiked:
                     track.isLiked = False
-                    print("Трек удалён из избранных")
                     self.repository.save_all(tracks)
+                    print("Трек удалён из избранных")
+                    return track
                     
-                track.isLiked = True
-                self.repository.save_all(tracks)
-                print("Трек добавлен в избранные")
-                return track
+                else: 
+                    track.isLiked = True
+                    self.repository.save_all(tracks)
+                    print("Трек добавлен в избранные")
+                    return track
             
         raise ValueError(f"Трек с ID {track_id} не найден")
 

@@ -30,7 +30,7 @@ class ConsoleApp:
                     track = self.service.play_track(int(input("ID трека: ")))
                     print(f"Играет: {track.artist} — {track.title}")
                 elif choice == "5":
-                    track = self.service.like_track(int(input("ID трека: ")))
+                    track = self.service.un_like_track(int(input("ID трека: ")))
                 elif choice == "6":
                     self.service.delete_track(int(input("ID трека: ")))
                     print("Трек удалён")
@@ -87,11 +87,10 @@ class ConsoleApp:
             artist = input("Исполнитель: ")
             duration = int(input("Длительность в секундах: "))
             track = self.service.add_track(title, artist, duration)
+            print(f"Добавлен трек #{track.id}")
 
         except ValueError as Error:
             print(f"Ошибка {Error}")
-
-        print(f"Добавлен трек #{track.id}")
 
     @staticmethod
     def _fmt(seconds: int) -> str:
