@@ -14,6 +14,7 @@ class JsonTrackRepository(TrackRepository):
     def get_all(self) -> list[Track]:
         if not self.path.exists():
             return []
+        
         data = json.loads(self.path.read_text(encoding="utf-8"))
         return [Track(**item) for item in data]
 
@@ -25,11 +26,11 @@ class JsonTrackRepository(TrackRepository):
                 title=t.title,
                 artist=t.artist,
                 duration=t.duration,
-                play_count=t.play_count,
                 liked=t.isLiked,
             )
             for t in tracks
         ]
+
         self.path.write_text(
             json.dumps(data, ensure_ascii=False, indent=2),
             encoding="utf-8",
