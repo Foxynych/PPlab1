@@ -11,24 +11,27 @@ class ConsoleApp:
         while True:
             print("\n=== МУЗЫКАЛЬНЫЙ РЕДАКТОР ===")
             print("1. Показать треки")
-            print("2. Добавить трек")
-            print("3. Воспроизвести трек")
-            print("4. Добавить в избранное")
-            print("5. Удалить трек")
+            print("2. Показать избранные треки")
+            print("3. Добавить трек")
+            print("4. Воспроизвести трек")
+            print("5. Добавить/удалить избранные")
+            print("6. Удалить трек")
             print("0. Выход")
             choice = input("Выберите действие: ").strip()
+
             try:
                 if choice == "1":
-                    self._show_tracks()
+                    self.show_tracks()
                 elif choice == "2":
-                    self._add_track()
+                    self.show_liked_tracks()
                 elif choice == "3":
+                    self.add_track()
+                elif choice == "4":
                     track = self.service.play_track(int(input("ID трека: ")))
                     print(f"Играет: {track.artist} — {track.title}")
-                elif choice == "4":
-                    track = self.service.like_track(int(input("ID трека: ")))
-                    print(f"В избранном: {track.title}")
                 elif choice == "5":
+                    track = self.service.like_track(int(input("ID трека: ")))
+                elif choice == "6":
                     self.service.delete_track(int(input("ID трека: ")))
                     print("Трек удалён")
                 elif choice == "0":
@@ -36,29 +39,58 @@ class ConsoleApp:
                     return
                 else:
                     print("Неизвестная команда")
+
             except ValueError as error:
                 print(f"Ошибка: {error}")
+
             except (EOFError, KeyboardInterrupt):
                 print("\nВыход")
                 return
 
-    def _show_tracks(self) -> None:
+    def show_tracks(self) -> None:
         tracks = self.service.list_tracks()
+
         if not tracks:
             print("Треков пока нет")
             return
+        
         for track in tracks:
             mark = "♥" if track.liked else " "
             print(
                 f"{track.id}. [{mark}] {track.artist} — {track.title} "
-                f"({self._fmt(track.duration)}, прослушиваний: {track.play_count})"
+                f"({self._fmt(track.duration)})"
             )
 
-    def _add_track(self) -> None:
-        title = input("Название: ")
-        artist = input("Исполнитель: ")
-        duration = int(input("Длительность в секундах: "))
-        track = self.service.add_track(title, artist, duration)
+    def show_liked_tracks(self) -> None:
+        tracks = self.service.list_tracks()
+        flag = True
+
+        if not tracks:
+            print("Треков пока нет")
+            return
+        
+        for track in tracks:
+            if track.isLiked:
+                flag = False
+
+                print(
+                    f"{track.id}. ♥ {track.artist} — {track.title} "
+                    f"({self._fmt(track.duration)})"
+                )
+
+        if flag:
+            print("Избранных треков пока нет =(")
+
+    def add_track(self) -> None:
+        try:
+            title = input("Название: ")
+            artist = input("Исполнитель: ")
+            duration = int(input("Длительность в секундах: "))
+            track = self.service.add_track(title, artist, duration)
+
+        except ValueError as Error:
+            print(f"Ошибка {Error}")
+
         print(f"Добавлен трек #{track.id}")
 
     @staticmethod
