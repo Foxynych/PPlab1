@@ -22,18 +22,24 @@ class ConsoleApp:
             try:
                 if choice == "1":
                     self.show_tracks()
+                    input("Нажмите Enter для выхода в меню...")
                 elif choice == "2":
                     self.show_liked_tracks()
+                    input("Нажмите Enter для выхода в меню...")
                 elif choice == "3":
                     self.add_track()
                 elif choice == "4":
-                    track = self.service.play_track(int(input("ID трека: ")))
-                    print(f"Играет: {track.artist} — {track.title}")
+                    if self.show_tracks():
+                        track = self.service.play_track(int(input("ID трека: ")))
+                        print(f"Играет: {track.artist} — {track.title}")
+                        input("Нажмите Enter для выхода в меню...")
                 elif choice == "5":
-                    track = self.service.un_like_track(int(input("ID трека: ")))
+                    if self.show_tracks():
+                        track = self.service.un_like_track(int(input("ID трека: ")))
                 elif choice == "6":
-                    self.service.delete_track(int(input("ID трека: ")))
-                    print("Трек удалён")
+                    if self.show_tracks():
+                        self.service.delete_track(int(input("ID трека: ")))
+                        print("Трек удалён")
                 elif choice == "0":
                     print("До свидания!")
                     return
@@ -47,19 +53,21 @@ class ConsoleApp:
                 print("\nВыход")
                 return
 
-    def show_tracks(self) -> None:
+    def show_tracks(self) -> bool:
         tracks = self.service.list_tracks()
 
         if not tracks:
             print("Треков пока нет")
-            return
+            return 0
         
         for track in tracks:
-            mark = "♥" if track.liked else " "
+            mark = "♥" if track.isLiked else " "
             print(
                 f"{track.id}. [{mark}] {track.artist} — {track.title} "
                 f"({self._fmt(track.duration)})"
             )
+
+        return 1
 
     def show_liked_tracks(self) -> None:
         tracks = self.service.list_tracks()
@@ -80,6 +88,9 @@ class ConsoleApp:
 
         if flag:
             print("Избранных треков пока нет =(")
+            return
+
+        input("Нажмите Enter для выхода в меню...")
 
     def add_track(self) -> None:
         try:

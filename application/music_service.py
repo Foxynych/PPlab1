@@ -34,7 +34,6 @@ class MusicService:
         tracks = self.repository.get_all()
         for track in tracks:
             if track.id == track_id:
-                track.play_count += 1
                 self.repository.save_all(tracks)
                 return track
             
